@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<project name="soc" basedir="." default="test">
+
+	<property name="src.dir" value="src" />
+	<property name="web.dir" value="war" />
+	<property name="build.dir" value="build-ant" />
+	<property name="lib.dir" value="lib" />
+	<property name="test.dir" value="test" />
+	<property name="name" value="soc" />
+
+	<path id="master-classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${build.dir}" />
+		<pathelement path="${test.dir}" />
+	</path>
+
+	<target name="build" description="Compile main source tree java files">
+		<property name="master-classpath" refid="master-classpath" />
+		<echo message="classpath=${master-classpath}" />
+		<mkdir dir="${build.dir}" />
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+		<javac destdir="${build.dir}" source="1.5" target="1.5" debug="true" deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<target name="clean" description="Clean output directories">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="buildtests" description="Compile test tree java files">
+		<mkdir dir="${build.dir}" />
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+		<javac destdir="${build.dir}" source="1.5" target="1.5" debug="true" deprecation="false" optimize="false" failonerror="true">
+			<src path="${test.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<path id="test-classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${build.dir}" />
+		<pathelement path="${test.dir}" />
+	</path>
+
+	<target name="test" depends="build, buildtests" description="Run tests">
+		<junit printsummary="true" fork="false" haltonfailure="true" failureproperty="tests.failed" showoutput="false">
+			<classpath refid="test-classpath" />
+			<formatter type="brief" usefile="false" />
+			<batchtest>
+				<fileset dir="${build.dir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<fail if="tests.failed">
+	            tests.failed=${tests.failed}
+	            ***********************************************************
+	            ***********************************************************
+	            ****  One or more tests failed!  Check the output ...  ****
+	            ***********************************************************
+	            ***********************************************************
+        </fail>
+	</target>
+
+</project>
