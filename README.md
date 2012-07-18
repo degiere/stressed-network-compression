@@ -23,6 +23,6 @@ and having a test bed to try different compression settings and network profiles
 Steps To Run
 ============
 
-1) Install a recent version of Apache Ant - http://ant.apache.org/manual/index.html
-2) ant test
+* Install a recent version of Apache Ant - http://ant.apache.org/manual/index.html
+* ant test
  
